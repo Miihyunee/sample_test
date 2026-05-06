@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한국환경보전원 출장 여비 계산기</title>
+<style>
+  :root {
+    --g-text: #202124;
+    --g-text-secondary: #5f6368;
+    --g-text-disabled: #80868b;
+    --g-border: #dadce0;
+    --g-border-strong: #c4c7c5;
+    --g-surface: #fff;
+    --g-surface-dim: #f4f6f4;
+    --g-surface-container: #f1f3f4;
+    --g-blue: #1a73e8;
+    --g-blue-hover: #1765cc;
+    --g-blue-bg: #e8f0fe;
+    --g-red: #d93025;
+    --g-red-bg: #fce8e6;
+    --g-green: #1e8e3e;
+    --g-green-hover: #188038;
+    --g-keci-dark: #1a6b3a;
+    --g-keci-light: #6ab04c;
+    --g-yellow: #e37400;
+    --g-yellow-bg: #fef7e0;
+    --g-radius: 4px;
+    --g-radius-lg: 8px;
+    --g-field-h: 40px;
+    --g-transition: 0.15s ease;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: var(--g-surface-dim);
+    color: var(--g-text);
+    line-height: 1.5;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── 사이트 헤더 ── */
+  .site-header {
+    background: #fff;
+    border-bottom: 3px solid var(--g-keci-dark);
+    padding: 0;
+    margin-bottom: 0;
+  }
+  .site-header-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .site-header-logo img { height: 38px; display: block; }
+  .site-header-divider {
+    width: 1px; height: 32px;
+    background: var(--g-border-strong);
+  }
+  .site-header-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .site-header-title .main-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--g-keci-dark);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .beta-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    background: #e05c2a;
+    border-radius: 4px;
+    padding: 1px 6px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+  }
+  .site-header-title .sub-title {
+    font-size: 11px;
+    color: var(--g-text-secondary);
+  }
+
+  /* ── 페이지 배너 ── */
+  .page-banner {
+    background: linear-gradient(135deg, var(--g-keci-dark) 0%, #2d8653 100%);
+    padding: 18px 16px;
+    margin-bottom: 20px;
+  }
+  .page-banner-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .page-banner h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .page-banner .banner-badge {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  .beta-notice {
+    background: #fff3cd;
+    border: 1.5px solid #e6a817;
+    border-left: 5px solid #d9800a;
+    padding: 7px 14px;
+    font-size: 11px;
+    color: #5a3e00;
+    margin-bottom: 16px;
+    border-radius: 4px;
+  }
+  .beta-notice strong { font-weight: 700; letter-spacing: -0.2px; }
+
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 16px 16px; }
+
+  h1 { display: none; }
+  .subtitle { display: none; }
+
+  /* Card */
+  .card {
+    background: var(--g-surface);
+    border: 1px solid var(--g-border);
+    border-radius: var(--g-radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    color: var(--g-text);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--g-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Section */
+  .form-section {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--g-border);
+  }
+  .form-section:last-of-type { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+  .form-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--g-text-disabled);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* Grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px 20px;
+    align-items: start;
+  }
+  .form-field.span-2 { grid-column: span 2; }
+
+  /* ---- Form field: fixed-height structure ---- */
+  .form-field {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-field.full-width {
+    grid-column: 1 / -1;
+  }
+  .form-field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--g-text-secondary);
+    margin-bottom: 4px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* All inputs & selects — identical height */
+  .form-field select,
+  .form-field input[type="text"],
+  .form-field input[type="number"],
+  .date-group input[type="date"] {
+    height: var(--g-field-h);
+    padding: 0 12px;
+    border: 1px solid var(--g-border);
+    border-radius: var(--g-radius);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--g-text);
+    background: var(--g-surface);
+    transition: border-color var(--g-transition), box-shadow var(--g-transition);
+    width: 100%;
+  }
+  .form-field select:hover,
+  .form-field input:hover,
+  .date-group input[type="date"]:hover {
+    border-color: var(--g-border-strong);
+  }
+  .form-field select:focus,
+  .form-field input:focus,
+  .date-group input[type="date"]:focus {
+    outline: none;
+    border-color: var(--g-blue);
+    box-shadow: 0 0 0 1px var(--g-blue);
+  }
+
+  /* Input with suffix (원, 박, 회) — suffix inside the visual box */
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-wrap input {
+    padding-right: 32px;
+  }
+  .input-wrap .unit {
+    position: absolute;
+    right: 10px;
+    color: var(--g-text-disabled);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  /* Sub-label line: help-text / comma-hint / error-msg — uniform 20px reserved */
+  .field-sub {
+    height: 16px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .field-sub .help-text {
+    font-size: 11px;
+    color: var(--g-text-disabled);
+    line-height: 1;
+  }
+  .field-sub .comma-hint {
+    font-size: 11px;
+    color: var(--g-blue);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .field-sub .error-msg {
+    font-size: 11px;
+    color: var(--g-red);
+    font-weight: 500;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity var(--g-transition);
+  }
+  .form-field.has-error .field-sub .error-msg { opacity: 1; }
+
+  .badge {
+    display: inline-block;
+    background: var(--g-blue-bg);
+    color: var(--g-blue);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-left: 3px;
+    vertical-align: middle;
+  }
+
+  /* Error state */
+  .form-field.has-error input,
+  .form-field.has-error select {
+    border-color: var(--g-red);
+    box-shadow: 0 0 0 1px var(--g-red);
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-3px); }
+    40%, 80% { transform: translateX(3px); }
+  }
+  .shake { animation: shake 0.3s ease; }
+
+  /* Date group */
+  .date-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .date-group input[type="date"] { flex: 1; }
+  .date-group .separator { color: var(--g-text-disabled); font-size: 14px; flex-shrink: 0; }
+  .date-info {
+    font-size: 12px;
+    color: var(--g-blue);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 28px;
+  }
+
+  /* Hideable fields */
+  .form-field.hideable {
+    transition: opacity 0.2s ease, max-height 0.25s ease, margin 0.25s ease;
+    max-height: 200px;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .form-field.hideable.hidden {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  /* Preview */
+  .preview {
+    background: var(--g-surface-dim);
+    border: 1px solid var(--g-border);
+    border-radius: var(--g-radius);
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--g-text-secondary);
+  }
+  .preview-row { display: flex; justify-content: space-between; padding: 4px 0; }
+  .preview-row.total {
+    border-top: 1px solid var(--g-text);
+    margin-top: 6px;
+    padding-top: 8px;
+    font-weight: 500;
+    color: var(--g-text);
+    font-size: 15px;
+  }
+  .preview-row .dim { color: var(--g-text-disabled); font-size: 12px; }
+
+  /* Buttons */
+  .btn {
+    padding: 0 16px;
+    height: 36px;
+    border: none;
+    border-radius: var(--g-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background var(--g-transition), box-shadow var(--g-transition);
+    white-space: nowrap;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn-primary { background: var(--g-blue); color: #fff; }
+  .btn-primary:hover { background: var(--g-blue-hover); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .btn-danger {
+    background: none;
+    color: var(--g-red);
+    border: 1px solid var(--g-border);
+    font-size: 12px;
+    height: 28px;
+    padding: 0 10px;
+  }
+  .btn-danger:hover { background: var(--g-red-bg); }
+  .btn-success { background: var(--g-green); color: #fff; }
+  .btn-success:hover { background: var(--g-green-hover); }
+  .btn-ghost {
+    background: none;
+    color: var(--g-blue);
+    border: 1px solid var(--g-border);
+  }
+  .btn-ghost:hover { background: var(--g-blue-bg); }
+  .btn-ghost.sample { color: var(--g-yellow); }
+  .btn-ghost.sample:hover { background: var(--g-yellow-bg); }
+  .btn-group { display: flex; gap: 8px; margin-top: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* Split inputs (개인카드 / 법인카드 분리 입력) */
+  .split-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 3px;
+  }
+  .split-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .split-label {
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 22px;
+    text-align: center;
+    padding: 2px 3px;
+    border-radius: 2px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+  .personal-label { background: var(--g-blue-bg); color: var(--g-blue); }
+  .corp-label { background: var(--g-surface-container); color: var(--g-text-secondary); }
+  .split-row .input-wrap { flex: 1; }
+  .split-row .input-wrap input {
+    height: 28px !important;
+    font-size: 12px !important;
+    padding: 0 24px 0 8px !important;
+  }
+  .split-row .input-wrap .unit { font-size: 11px; }
+
+  .t-personal { color: var(--g-blue); font-weight: 500; }
+  .badge-personal, .badge-corp {
+    display: inline-block; padding: 0 3px;
+    border-radius: 2px; font-size: 7px; font-weight: 600;
+    vertical-align: middle; line-height: 1.4;
+  }
+  .badge-personal { background: var(--g-blue-bg); color: var(--g-blue); }
+  .badge-corp { background: var(--g-surface-container); color: var(--g-text-secondary); }
+
+  @media print {
+    .t-personal { color: #0055cc !important; }
+    .t-personal-tag { color: #0055cc !important; font-size: 7pt !important; }
+    .badge-personal { background: #dce8fc !important; color: #0055cc !important; }
+    .badge-corp { background: #e8e8e8 !important; }
+  }
+
+  /* Attachment table */
+  .attachment-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  .attachment-table th, .attachment-table td { border: 1px solid var(--g-border-strong); padding: 8px 6px; text-align: center; vertical-align: middle; }
+  .attachment-table th { background: var(--g-surface-container); font-weight: 500; color: var(--g-text); }
+  .attachment-table td { color: var(--g-text-secondary); }
+  .attachment-table tr.total-row { background: var(--g-surface-dim); font-weight: 500; }
+  .attachment-table .left { text-align: left; padding-left: 10px; }
+  .attachment-table .right { text-align: right; padding-right: 10px; }
+
+  /* Trip list */
+  .trip-item {
+    background: var(--g-surface-dim);
+    border: 1px solid var(--g-border);
+    border-radius: var(--g-radius);
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+  .trip-item .move-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .btn-move {
+    width: 24px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid var(--g-border);
+    border-radius: 3px;
+    background: var(--g-surface);
+    color: var(--g-text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background var(--g-transition), color var(--g-transition);
+  }
+  .btn-move:hover:not(:disabled) { background: var(--g-blue-bg); color: var(--g-blue); border-color: var(--g-blue); }
+  .btn-move:disabled { opacity: 0.25; cursor: default; }
+  .trip-item .info { font-size: 13px; color: var(--g-text-secondary); flex: 1; min-width: 0; }
+  .trip-item .info strong { color: var(--g-text); font-weight: 500; }
+  .trip-item .amount { font-size: 14px; font-weight: 500; color: var(--g-text); margin-left: auto; margin-right: 4px; white-space: nowrap; }
+  .trip-item .btn { height: 28px; padding: 0 10px; font-size: 12px; }
+  .trip-item .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+  .trip-item .tag { background: var(--g-yellow-bg); color: var(--g-yellow); }
+  .trip-item .tag.inner { background: #e6f4ea; color: var(--g-green); }
+
+  /* Regulation note */
+  .regulation-note {
+    background: var(--g-surface-dim);
+    border: 1px solid var(--g-border);
+    border-radius: var(--g-radius);
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--g-text-secondary);
+    line-height: 1.8;
+  }
+  .regulation-note strong { color: var(--g-text); font-weight: 500; }
+  .regulation-note ul { margin: 6px 0 0 18px; }
+  .regulation-note li { margin-bottom: 2px; }
+  .calc-note {
+    font-size: 11px;
+    color: var(--g-text-disabled);
+    margin-top: 6px;
+    padding: 0 4px;
+    line-height: 1.6;
+  }
+  .highlight { color: var(--g-red); }
+  .note { display: none; }
+
+  /* Footer */
+  .site-footer {
+    background: #fff;
+    border-top: 1px solid var(--g-border);
+    margin-top: 24px;
+    padding: 14px 16px;
+    font-size: 11px;
+    color: var(--g-text-disabled);
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .form-grid { grid-template-columns: 1fr 1fr; }
+    .form-field.span-2 { grid-column: span 2; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 16px 12px; }
+    .card { padding: 20px 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-field.full-width,
+    .form-field.span-2 { grid-column: auto; }
+    .date-group { flex-wrap: wrap; }
+    .date-group input[type="date"] { min-width: 0; }
+    .btn-group { flex-wrap: wrap; }
+    .btn { flex: 1; min-width: 0; }
+    .trip-item { flex-wrap: wrap; gap: 8px; }
+    .trip-item .amount { margin: 0; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; padding: 0; margin: 0; font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 8pt; }
+    .container { max-width: 100%; margin: 0; }
+    .card { box-shadow: none; border: none; border-radius: 0; padding: 0; margin: 0; }
+    .no-print { display: none !important; }
+    h1, .subtitle, .site-footer { display: none !important; }
+
+    #outputCard h2 {
+      font-family: 'HY헤드라인M', 'HYHeadLine', '맑은 고딕', sans-serif;
+      font-size: 14pt; text-align: left; border-bottom: none;
+      padding-bottom: 8px; margin-bottom: 0; color: #000;
+      justify-content: flex-start;
+    }
+    #outputCard h2::before { content: "\25A1  "; }
+
+    .attachment-table { font-size: 8pt; border-collapse: collapse; width: 100%; border: 1.5px solid #000; table-layout: fixed; }
+    .attachment-table th, .attachment-table td {
+      border: 1px solid #000; padding: 4px 3px; vertical-align: middle;
+      color: #000; font-size: 7.5pt; line-height: 1.3;
+      word-break: keep-all; overflow-wrap: break-word;
+    }
+    .attachment-table td.right { word-break: keep-all; overflow-wrap: break-word; }
+    .attachment-table th { background: #ccc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 700; font-size: 7.5pt; color: #000; }
+    .attachment-table tr.total-row { background: none !important; }
+    .attachment-table tr.total-row td { font-weight: 700; font-size: 8pt; border-top: 1.5px solid #000; }
+    .attachment-table .left { text-align: left; padding-left: 4px; }
+    .attachment-table .right { text-align: right; padding-right: 4px; }
+    .attachment-table td .highlight, .attachment-table .highlight { color: #000; }
+
+    .note { display: none !important; }
+    .regulation-note { background: none !important; border: 1px solid #999; border-radius: 0; padding: 6px 8px; font-size: 6.5pt; color: #000; margin-top: 8px; line-height: 1.5; }
+    .regulation-note strong { color: #000; font-size: 7pt; }
+    .regulation-note ul { margin: 3px 0 0 14px; }
+    .regulation-note li { margin-bottom: 1px; }
+    .calc-note { font-size: 6pt; color: #888; margin-top: 3px; padding: 0 2px; line-height: 1.5; }
+
+    #listCard { display: none !important; }
+    @page { size: A4 portrait; margin: 12mm 10mm; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header no-print">
+  <div class="site-header-inner">
+    <div class="site-header-logo">
+      <img src="ci_kor_row.png" alt="한국환경보전원 로고">
+    </div>
+    <div class="site-header-divider"></div>
+    <div class="site-header-title">
+      <span class="main-title">출장 여비 계산기<span class="beta-badge">BETA</span></span>
+      <span class="sub-title">여비규정 [시행 2025.12.18.] 기준 · 본원: 서울특별시 성동구</span>
+    </div>
+  </div>
+</header>
+
+<div class="page-banner no-print">
+  <div class="page-banner-inner">
+    <h1>국내 출장 여비 계산기</h1>
+    <span class="banner-badge">한국환경보전원 여비규정 [시행 2025.12.18.]</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="beta-notice no-print">
+    <strong>⚠ 안내</strong> &nbsp;본 프로그램은 도입 초기 단계로, 결과에 대한 검산 및 검토가 필요합니다.
+  </div>
+  <h1>한국환경보전원 출장 여비 계산기</h1>
+  <p class="subtitle">여비규정 [시행 2025.12.18.] 기준 | 본원: 서울 성동구 | 만든이: 한국환경보전원 대외환경협력처 홍길동 사원</p>
+
+  <!-- 입력 카드 -->
+  <div class="card no-print">
+    <h2>출장 정보 입력</h2>
+
+    <!-- 기본 정보 -->
+    <div class="form-section">
+      <div class="form-section-title">기본 정보</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="name">출장자</label>
+          <input type="text" id="name" placeholder="예: 홍길동">
+          <div class="field-sub"><span class="error-msg">출장자를 입력해주세요</span></div>
+        </div>
+        <div class="form-field">
+          <label for="jobTitle">직위</label>
+          <input type="text" id="jobTitle" placeholder="예: 주임">
+          <div class="field-sub"></div>
+        </div>
+        <div class="form-field">
+          <label for="destination">출장지</label>
+          <input type="text" id="destination" placeholder="예: 강남역 회의실">
+          <div class="field-sub"><span class="error-msg">출장지를 입력해주세요</span></div>
+        </div>
+        <div class="form-field span-2">
+          <label for="dateStart">출장 기간</label>
+          <div class="date-group">
+            <input type="date" id="dateStart" onchange="onDateChange()">
+            <span class="separator">~</span>
+            <input type="date" id="dateEnd" onchange="onDateChange()">
+            <span class="date-info" id="dateInfo"></span>
+          </div>
+          <div class="field-sub"><span class="error-msg">출장 기간을 선택해주세요</span></div>
+        </div>
+        <div class="form-field span-2">
+          <label for="purpose">출장 용무</label>
+          <input type="text" id="purpose" placeholder="예: OO회의 참석">
+          <div class="field-sub"></div>
+        </div>
+        <div class="form-field">
+          <label for="attachment">붙임 번호</label>
+          <input type="text" id="attachment" placeholder="예: 붙임1">
+          <div class="field-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 출장 조건 -->
+    <div class="form-section">
+      <div class="form-section-title">출장 조건</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tripType">출장 구분</label>
+          <select id="tripType" onchange="onTripTypeChange(); updatePreview()">
+            <option value="내4">근무지 내 (4시간 이상)</option>
+            <option value="내">근무지 내 (4시간 미만)</option>
+            <option value="외" selected>근무지 외</option>
+          </select>
+          <div class="field-sub"><span class="help-text" id="tripTypeHelp">다른 시·군으로의 출장</span></div>
+        </div>
+        <div class="form-field">
+          <label for="grade">직급 구분</label>
+          <select id="grade" onchange="updatePreview()">
+            <option value="1">제1호 (원장/상임임원/보직자)</option>
+            <option value="2" selected>제2호 (일반 직원)</option>
+          </select>
+          <div class="field-sub"></div>
+        </div>
+        <div class="form-field hideable" id="regionField">
+          <label for="region">출장 지역</label>
+          <select id="region" onchange="updatePreview()">
+            <optgroup label="특별시">
+              <option value="서울">서울특별시</option>
+            </optgroup>
+            <optgroup label="광역시·특별자치시">
+              <option value="광역시">인천광역시</option>
+              <option value="광역시">부산광역시</option>
+              <option value="광역시">대구광역시</option>
+              <option value="광역시">광주광역시</option>
+              <option value="광역시">대전광역시</option>
+              <option value="광역시">울산광역시</option>
+              <option value="기타">세종특별자치시</option>
+            </optgroup>
+            <optgroup label="도">
+              <option value="기타" selected>경기도</option>
+              <option value="기타">강원특별자치도</option>
+              <option value="기타">충청북도</option>
+              <option value="기타">충청남도</option>
+              <option value="기타">전북특별자치도</option>
+              <option value="기타">전라남도</option>
+              <option value="기타">경상북도</option>
+              <option value="기타">경상남도</option>
+              <option value="기타">제주특별자치도</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="vehicle">차량 이용</label>
+          <select id="vehicle" onchange="onVehicleChange(); updatePreview()">
+            <option value="public">대중교통</option>
+            <option value="company">업무용차량/자가용</option>
+            <option value="exclusive">전용차량</option>
+          </select>
+          <div class="field-sub"><span id="vehicleHint" class="help-text"></span></div>
+        </div>
+        <div class="form-field hideable hidden" id="vehicleDaysField">
+          <label for="vehicleDays">차량 이용 일수</label>
+          <div class="input-wrap">
+            <input type="number" id="vehicleDays" value="1" min="0" max="364" oninput="updateVehicleDaysHint(); updatePreview()">
+            <span class="unit">일</span>
+          </div>
+          <div class="field-sub"><span id="vehicleDaysHint" class="help-text"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 비용 -->
+    <div class="form-section">
+      <div class="form-section-title">비용</div>
+      <div class="form-grid">
+        <div class="form-field hideable" id="lodgingField">
+          <label for="lodgingActual">숙박비 <span class="badge">1박당</span></label>
+          <div class="input-wrap">
+            <input type="number" id="lodgingActual" value="0" min="0" step="1000" oninput="onNumberInput(this); updatePreview()">
+            <span class="unit">원</span>
+          </div>
+          <div class="field-sub"><span class="comma-hint" id="lodgingActualHint"></span></div>
+          <div class="split-inputs">
+            <div class="split-row">
+              <span class="split-label personal-label">개인</span>
+              <div class="input-wrap">
+                <input type="number" id="lodgingPersonalNights" value="0" min="0" max="364" oninput="updatePreview()">
+                <span class="unit">박</span>
+              </div>
+            </div>
+            <div class="split-row">
+              <span class="split-label corp-label">법인</span>
+              <div class="input-wrap">
+                <input type="number" id="lodgingCorpNights" value="0" min="0" max="364" oninput="updatePreview()">
+                <span class="unit">박</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-field hideable" id="freeMealsField">
+          <label for="freeMeals">무료 식사 <span class="badge">총합</span></label>
+          <div class="input-wrap">
+            <input type="number" id="freeMeals" value="0" min="0" oninput="updatePreview()">
+            <span class="unit">회</span>
+          </div>
+          <div class="field-sub"></div>
+        </div>
+        <div id="lodgingNightsWarnRow" class="form-field hideable full-width" style="display:none; margin:0; padding:4px 0;">
+          <span id="lodgingNightsWarn" style="color:#c0392b; font-size:12px;">⚠ 숙박비를 입력했지만 숙박 일수가 0입니다. 계산에 반영되지 않습니다.</span>
+        </div>
+        <div class="form-field full-width" style="margin-bottom:4px; padding-bottom:4px;">
+          <div class="form-section-title" style="margin-bottom:2px;">교통비 (실비)</div>
+          <div style="font-size:11px; color:var(--g-text-disabled);">합계: <strong id="transportTotalDisplay">0원</strong></div>
+        </div>
+        <div class="form-field" id="tFieldFare">
+          <label>운임비 <span class="badge">버스·기차·택시</span></label>
+          <div class="split-inputs">
+            <div class="split-row">
+              <span class="split-label personal-label">개인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportFarePersonal" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+            <div class="split-row">
+              <span class="split-label corp-label">법인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportFareCorp" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-sub"><span class="comma-hint" id="transportFareHint"></span></div>
+        </div>
+        <div class="form-field" id="tFieldFuel">
+          <label>주유비</label>
+          <div class="split-inputs">
+            <div class="split-row">
+              <span class="split-label personal-label">개인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportFuelPersonal" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+            <div class="split-row">
+              <span class="split-label corp-label">법인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportFuelCorp" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-sub"><span class="comma-hint" id="transportFuelHint"></span></div>
+        </div>
+        <div class="form-field" id="tFieldParking">
+          <label>주차비</label>
+          <div class="split-inputs">
+            <div class="split-row">
+              <span class="split-label personal-label">개인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportParkingPersonal" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+            <div class="split-row">
+              <span class="split-label corp-label">법인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportParkingCorp" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-sub"><span class="comma-hint" id="transportParkingHint"></span></div>
+        </div>
+        <div class="form-field" id="tFieldHipass">
+          <label>하이패스 요금</label>
+          <div class="split-inputs">
+            <div class="split-row">
+              <span class="split-label personal-label">개인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportHipassPersonal" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+            <div class="split-row">
+              <span class="split-label corp-label">법인</span>
+              <div class="input-wrap">
+                <input type="number" id="transportHipassCorp" value="0" min="0" step="100" oninput="updatePreview()">
+                <span class="unit">원</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-sub"><span class="comma-hint" id="transportHipassHint"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview" id="preview"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" id="addTripBtn" onclick="addTrip()">출장 추가</button>
+      <button class="btn btn-ghost" onclick="resetForm()">입력 초기화</button>
+      <button class="btn btn-ghost sample" onclick="loadSampleData()">샘플 데이터</button>
+    </div>
+  </div>
+
+  <!-- 추가된 출장 목록 -->
+  <div class="card" id="listCard" style="display:none;">
+    <h2 class="no-print">
+      추가된 출장 목록
+      <button class="btn btn-danger no-print" onclick="clearAll()">전체 삭제</button>
+    </h2>
+    <div id="tripList"></div>
+  </div>
+
+  <!-- 별첨 출력 -->
+  <div class="card" id="outputCard" style="display:none;">
+    <h2>
+      <span id="outputTitle">출장 여비 별첨 (<span id="tripCount">0</span>인)</span>
+      <span class="no-print">
+        <button class="btn btn-success" onclick="window.print()">인쇄 / PDF 저장</button>
+        <button class="btn btn-ghost" onclick="exportToExcel()" style="margin-left:8px;">엑셀 저장</button>
+      </span>
+    </h2>
+    <table class="attachment-table" id="attachmentTable">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:7%;">출장자</th>
+          <th rowspan="2" style="width:10%;">출장지</th>
+          <th rowspan="2" style="width:11%;">출장 기간</th>
+          <th rowspan="2" style="width:14%;">출장 용무</th>
+          <th colspan="4">출장 여비 내역</th>
+          <th colspan="2">지급 구분</th>
+          <th rowspan="2" style="width:9%;">총액(원)</th>
+        </tr>
+        <tr>
+          <th style="width:10%;">일비</th>
+          <th style="width:10%;">식비</th>
+          <th style="width:10%;">숙박비</th>
+          <th style="width:10%;">교통비</th>
+          <th style="width:9%;">개인예금(원)</th>
+          <th style="width:9%;">법인예금(원)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="regulation-note" id="regulationNote" style="display:none;"></div>
+    <div class="calc-note" id="calcNote" style="display:none;"></div>
+  </div>
+
+</div>
+
+<footer class="site-footer no-print">
+  Copyright © 한국환경보전원 · 만든이: 대외환경협력처 홍길동 사원
+</footer>
+
+<script src="config.js"></script>
+<script src="calc.js"></script>
+<script>
+
+var trips = [];
+var editingIdx = -1;
+
+function fmt(n) {
+  return n.toLocaleString('ko-KR') + '원';
+}
+function fmtN(n) {
+  return n.toLocaleString('ko-KR');
+}
+function nb(s) {
+  return '<span style="display:inline-block;">' + s + '</span>';
+}
+
+function onNumberInput(el) {
+  var val = parseInt(el.value) || 0;
+  var hintEl = document.getElementById(el.id + 'Hint');
+  if (hintEl) {
+    hintEl.textContent = val > 0 ? val.toLocaleString('ko-KR') + '원' : '';
+  }
+}
+
+function onDateChange() {
+  var startEl = document.getElementById('dateStart');
+  var endEl = document.getElementById('dateEnd');
+  var infoEl = document.getElementById('dateInfo');
+
+  if (startEl.value && !endEl.value) {
+    endEl.value = startEl.value;
+  }
+
+  if (startEl.value && endEl.value) {
+    var s = new Date(startEl.value);
+    var e = new Date(endEl.value);
+    if (e < s) { endEl.value = startEl.value; e = s; }
+    var diff = Math.round((e - s) / 86400000) + 1;
+    infoEl.textContent = diff + '일';
+  } else {
+    infoEl.textContent = '';
+  }
+  clearFieldError(startEl.closest('.form-field'));
+  updatePreview();
+}
+
+function getCalcDays() {
+  var startEl = document.getElementById('dateStart');
+  var endEl = document.getElementById('dateEnd');
+  if (startEl.value && endEl.value) {
+    var s = new Date(startEl.value);
+    var e = new Date(endEl.value);
+    return Math.max(1, Math.round((e - s) / 86400000) + 1);
+  }
+  return 1;
+}
+
+function formatPeriod() {
+  var startEl = document.getElementById('dateStart');
+  var endEl = document.getElementById('dateEnd');
+  if (!startEl.value) return '';
+  var s = new Date(startEl.value);
+  var days = getCalcDays();
+
+  function fmtDate(d) {
+    var y = String(d.getFullYear()).slice(2);
+    var m = d.getMonth() + 1;
+    var day = d.getDate();
+    return "'" + y + '.' + m + '.' + day + '.';
+  }
+
+  var dayNames = ['일','월','화','수','목','금','토'];
+
+  if (days === 1) {
+    var dow = dayNames[s.getDay()];
+    return fmtDate(s) + '(' + dow + ')';
+  } else {
+    var e = new Date(endEl.value);
+    var sy = String(s.getFullYear()).slice(2);
+    var ey = String(e.getFullYear()).slice(2);
+    var startStr = fmtDate(s);
+    var endStr;
+    if (sy === ey && s.getMonth() === e.getMonth()) {
+      endStr = e.getDate() + '.';
+    } else if (sy === ey) {
+      endStr = (e.getMonth()+1) + '.' + e.getDate() + '.';
+    } else {
+      endStr = fmtDate(e);
+    }
+    return startStr + '~' + endStr + '(' + days + '일)';
+  }
+}
+
+function onTripTypeChange() {
+  var tripType = document.getElementById('tripType').value;
+  var isInner = tripType.indexOf('내') === 0;
+
+  var conditionalFields = ['regionField', 'freeMealsField', 'lodgingField'];
+  conditionalFields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (isInner) el.classList.add('hidden');
+    else el.classList.remove('hidden');
+  });
+
+  var helpEl = document.getElementById('tripTypeHelp');
+  if (isInner) {
+    helpEl.textContent = '같은 시·군 내 출장 (본원 기준: 서울시 내)';
+  } else {
+    helpEl.textContent = '다른 시·군으로의 출장';
+  }
+
+  if (isInner) {
+    document.getElementById('lodgingPersonalNights').value = '0';
+    document.getElementById('lodgingCorpNights').value = '0';
+    document.getElementById('freeMeals').value = '0';
+    document.getElementById('lodgingActual').value = '0';
+    var hint = document.getElementById('lodgingActualHint');
+    if (hint) hint.textContent = '';
+  }
+}
+
+function calcLodgingSplit(data) {
+  var lodgingCap = { '서울': 100000, '광역시': 80000, '기타': 70000 };
+  var perNight = data.lodgingPerNight || 0;
+  if (data.grade !== '1') perNight = Math.min(perNight, lodgingCap[data.region] || 70000);
+  return {
+    personal: perNight * (data.lodgingPersonalNights || 0),
+    corp: perNight * (data.lodgingCorpNights || 0)
+  };
+}
+
+function calcPreviewDeposit(r, data) {
+  var personal = r.ilbi + r.meal;
+  var corp = 0;
+  var ls = calcLodgingSplit(data);
+  personal += ls.personal;
+  corp += ls.corp;
+  personal += (data.transportFarePersonal || 0) + (data.transportFuelPersonal || 0) +
+              (data.transportParkingPersonal || 0) + (data.transportHipassPersonal || 0);
+  corp += (data.transportFareCorp || 0) + (data.transportFuelCorp || 0) +
+          (data.transportParkingCorp || 0) + (data.transportHipassCorp || 0);
+  return { personal: personal, corp: corp };
+}
+
+function onVehicleChange() {
+  var v = document.getElementById('vehicle').value;
+  var hint = document.getElementById('vehicleHint');
+  var vDaysField = document.getElementById('vehicleDaysField');
+  if (v === 'company') {
+    hint.textContent = '이용한 날 일비 1/2 감액 적용';
+    vDaysField.classList.remove('hidden');
+    var days = getCalcDays();
+    var cur = parseInt(document.getElementById('vehicleDays').value) || 0;
+    if (cur === 0 || cur > days) document.getElementById('vehicleDays').value = days;
+  } else if (v === 'exclusive') {
+    hint.textContent = '이용한 날 일비 미지급';
+    vDaysField.classList.remove('hidden');
+    var days = getCalcDays();
+    var cur = parseInt(document.getElementById('vehicleDays').value) || 0;
+    if (cur === 0 || cur > days) document.getElementById('vehicleDays').value = days;
+  } else {
+    hint.textContent = '';
+    vDaysField.classList.add('hidden');
+  }
+  updateVehicleDaysHint();
+}
+
+function updateVehicleDaysHint() {
+  var v = document.getElementById('vehicle').value;
+  if (v === 'public') return;
+  var days = getCalcDays();
+  var vd = Math.min(Math.max(0, parseInt(document.getElementById('vehicleDays').value) || 0), days);
+  var pub = days - vd;
+  var hintEl = document.getElementById('vehicleDaysHint');
+  if (pub > 0 && vd > 0) {
+    hintEl.textContent = '나머지 ' + pub + '일은 대중교통';
+  } else if (pub === 0) {
+    hintEl.textContent = '전 기간 차량 이용';
+  } else {
+    hintEl.textContent = '';
+  }
+}
+
+function updatePreview() {
+  updateVehicleDaysHint();
+  var data = getFormData();
+  var warnRow = document.getElementById('lodgingNightsWarnRow');
+  if (warnRow) {
+    var lodgingVal = parseInt(document.getElementById('lodgingActual').value) || 0;
+    var totalNights = (parseInt(document.getElementById('lodgingPersonalNights').value) || 0) +
+                      (parseInt(document.getElementById('lodgingCorpNights').value) || 0);
+    warnRow.style.display = (lodgingVal > 0 && totalNights === 0) ? 'block' : 'none';
+  }
+  var totalEl = document.getElementById('transportTotalDisplay');
+  if (totalEl) totalEl.textContent = data.transport.toLocaleString('ko-KR') + '원';
+
+  // 교통비 항목별 합계 힌트 표시
+  [
+    { label: '운임', p: data.transportFarePersonal, c: data.transportFareCorp, hint: 'transportFareHint' },
+    { label: '주유', p: data.transportFuelPersonal, c: data.transportFuelCorp, hint: 'transportFuelHint' },
+    { label: '주차', p: data.transportParkingPersonal, c: data.transportParkingCorp, hint: 'transportParkingHint' },
+    { label: '하이패스', p: data.transportHipassPersonal, c: data.transportHipassCorp, hint: 'transportHipassHint' }
+  ].forEach(function(x) {
+    var hintEl = document.getElementById(x.hint);
+    if (!hintEl) return;
+    var total = (x.p || 0) + (x.c || 0);
+    hintEl.textContent = total > 0 ? '합계 ' + total.toLocaleString('ko-KR') + '원' : '';
+  });
+
+  var r = calcTrip(data);
+  var isInner = r.isInner;
+  var html = '';
+
+  var ilbiLabel = '일비';
+  if (isInner && data.tripType === '내4') ilbiLabel += ' (근무지 내 4h+)';
+  else if (isInner) ilbiLabel += ' (근무지 내 4h-)';
+  html += '<div class="preview-row"><span>' + ilbiLabel + ' <span class="badge-personal">(개인)</span></span><span>' + fmt(r.ilbi) + '</span></div>';
+
+  if (!isInner) {
+    var mealLabel = '식비';
+    if (data.freeMeals > 0) {
+      mealLabel += ' (' + fmt(r.mealFull) + ' - ' + fmt(r.mealDeduct) + ', ' + data.freeMeals + '식 공제)';
+    }
+    html += '<div class="preview-row"><span>' + mealLabel + ' <span class="badge-personal">(개인)</span></span><span>' + fmt(r.meal) + '</span></div>';
+
+    // 숙박비 개인/법인 분리 표시
+    if (r.lodging > 0) {
+      var ls = calcLodgingSplit(data);
+      var hasBoth = ls.personal > 0 && ls.corp > 0;
+      if (hasBoth) {
+        html += '<div class="preview-row"><span>숙박비</span><span>' + fmt(r.lodging) + '</span></div>';
+        html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ 개인 <span class="badge-personal">(개인)</span></span><span>' + fmt(ls.personal) + '</span></div>';
+        html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ 법인 <span class="badge-corp">(법인)</span></span><span class="dim">' + fmt(ls.corp) + '</span></div>';
+      } else {
+        var singleBadge = ls.personal > 0 ? '<span class="badge-personal">(개인)</span>' : '<span class="badge-corp">(법인)</span>';
+        html += '<div class="preview-row"><span>숙박비 ' + singleBadge + '</span><span>' + fmt(r.lodging) + '</span></div>';
+      }
+    } else {
+      html += '<div class="preview-row"><span>숙박비</span><span>' + fmt(r.lodging) + '</span></div>';
+    }
+  } else {
+    html += '<div class="preview-row"><span>식비 <span class="dim">근무지 내 미지급</span></span><span class="dim">-</span></div>';
+    html += '<div class="preview-row"><span>숙박비 <span class="dim">근무지 내 미지급</span></span><span class="dim">-</span></div>';
+  }
+
+  // 교통비 개인/법인 분리 표시
+  var tCategories = [
+    { label: '운임',     p: data.transportFarePersonal    || 0, c: data.transportFareCorp    || 0 },
+    { label: '주유',     p: data.transportFuelPersonal    || 0, c: data.transportFuelCorp    || 0 },
+    { label: '주차',     p: data.transportParkingPersonal || 0, c: data.transportParkingCorp || 0 },
+    { label: '하이패스', p: data.transportHipassPersonal  || 0, c: data.transportHipassCorp  || 0 }
+  ].filter(function(x) { return (x.p + x.c) > 0; });
+
+  var transportLabel = '교통비';
+  var tHasPersonal = tCategories.some(function(x) { return x.p > 0; });
+  var tHasCorp = tCategories.some(function(x) { return x.c > 0; });
+  if (tHasPersonal && tHasCorp) transportLabel += ' <span class="badge-personal">(개인)</span><span class="badge-corp">(법인)</span> 혼합';
+  else if (tHasPersonal) transportLabel += ' <span class="badge-personal">(개인)</span>';
+  else if (tHasCorp) transportLabel += ' <span class="badge-corp">(법인)</span>';
+  html += '<div class="preview-row"><span>' + transportLabel + '</span><span>' + fmt(r.transport) + '</span></div>';
+
+  if (tCategories.length > 0 && (tCategories.length > 1 || (tCategories[0].p > 0 && tCategories[0].c > 0))) {
+    tCategories.forEach(function(x) {
+      var total = x.p + x.c;
+      if (x.p > 0 && x.c > 0) {
+        html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ ' + x.label + '</span><span>' + fmt(total) + '</span></div>';
+        html += '<div class="preview-row"><span class="dim" style="padding-left:24px;">└ <span class="badge-personal">(개인)</span></span><span>' + fmt(x.p) + '</span></div>';
+        html += '<div class="preview-row"><span class="dim" style="padding-left:24px;">└ <span class="badge-corp">(법인)</span></span><span class="dim">' + fmt(x.c) + '</span></div>';
+      } else {
+        var badge = x.p > 0 ? '<span class="badge-personal">(개인)</span>' : '<span class="badge-corp">(법인)</span>';
+        html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ ' + x.label + ' ' + badge + '</span><span>' + fmt(total) + '</span></div>';
+      }
+    });
+  }
+
+  html += '<div class="preview-row total"><span>총액</span><span class="highlight">' + fmt(r.total) + '</span></div>';
+
+  var dep = calcPreviewDeposit(r, data);
+  if (dep.personal > 0 && dep.corp > 0) {
+    html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ <span class="badge-personal">(개인)</span></span><span>' + fmt(dep.personal) + '</span></div>';
+    html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ <span class="badge-corp">(법인)</span></span><span class="dim">' + fmt(dep.corp) + '</span></div>';
+  } else if (dep.personal > 0) {
+    html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ <span class="badge-personal">전액 개인예금</span></span><span>' + fmt(dep.personal) + '</span></div>';
+  } else if (dep.corp > 0) {
+    html += '<div class="preview-row"><span class="dim" style="padding-left:12px;">└ <span class="badge-corp">일비·식비 개인예금 + 법인예금 포함</span></span></div>';
+  }
+
+  document.getElementById('preview').innerHTML = html;
+}
+
+function getFormData() {
+  var days = getCalcDays();
+  var tFP  = Math.max(0, parseInt(document.getElementById('transportFarePersonal').value)    || 0);
+  var tFC  = Math.max(0, parseInt(document.getElementById('transportFareCorp').value)        || 0);
+  var tFuP = Math.max(0, parseInt(document.getElementById('transportFuelPersonal').value)    || 0);
+  var tFuC = Math.max(0, parseInt(document.getElementById('transportFuelCorp').value)        || 0);
+  var tPaP = Math.max(0, parseInt(document.getElementById('transportParkingPersonal').value) || 0);
+  var tPaC = Math.max(0, parseInt(document.getElementById('transportParkingCorp').value)     || 0);
+  var tHP  = Math.max(0, parseInt(document.getElementById('transportHipassPersonal').value)  || 0);
+  var tHC  = Math.max(0, parseInt(document.getElementById('transportHipassCorp').value)      || 0);
+  var lodgingPN = Math.max(0, parseInt(document.getElementById('lodgingPersonalNights').value) || 0);
+  var lodgingCN = Math.max(0, parseInt(document.getElementById('lodgingCorpNights').value)     || 0);
+  return {
+    name: document.getElementById('name').value.trim(),
+    jobTitle: document.getElementById('jobTitle').value.trim(),
+    destination: document.getElementById('destination').value.trim(),
+    dateStart: document.getElementById('dateStart').value,
+    dateEnd: document.getElementById('dateEnd').value,
+    period: formatPeriod(),
+    purpose: document.getElementById('purpose').value.trim(),
+    grade: document.getElementById('grade').value,
+    gradeText: document.getElementById('grade').options[document.getElementById('grade').selectedIndex].text,
+    tripType: document.getElementById('tripType').value,
+    tripTypeText: document.getElementById('tripType').options[document.getElementById('tripType').selectedIndex].text,
+    region: document.getElementById('region').value,
+    regionText: document.getElementById('region').options[document.getElementById('region').selectedIndex].text,
+    days: days,
+    nights: lodgingPN + lodgingCN,
+    lodgingPersonalNights: lodgingPN,
+    lodgingCorpNights: lodgingCN,
+    vehicle: document.getElementById('vehicle').value,
+    vehicleText: document.getElementById('vehicle').options[document.getElementById('vehicle').selectedIndex].text,
+    vehicleDays: Math.max(0, parseInt(document.getElementById('vehicleDays').value) || 0),
+    freeMeals: Math.max(0, parseInt(document.getElementById('freeMeals').value) || 0),
+    transportFarePersonal:    tFP,
+    transportFareCorp:        tFC,
+    transportFuelPersonal:    tFuP,
+    transportFuelCorp:        tFuC,
+    transportParkingPersonal: tPaP,
+    transportParkingCorp:     tPaC,
+    transportHipassPersonal:  tHP,
+    transportHipassCorp:      tHC,
+    transport: tFP + tFC + tFuP + tFuC + tPaP + tPaC + tHP + tHC,
+    lodgingPerNight: Math.max(0, parseInt(document.getElementById('lodgingActual').value) || 0),
+    attachment: document.getElementById('attachment').value.trim()
+  };
+}
+
+function setFieldError(field) {
+  field.classList.add('has-error');
+  field.classList.add('shake');
+  setTimeout(function() { field.classList.remove('shake'); }, 350);
+  var input = field.querySelector('input, select');
+  if (input) {
+    input.addEventListener('input', function handler() {
+      clearFieldError(field);
+      input.removeEventListener('input', handler);
+    }, { once: true });
+  }
+}
+function clearFieldError(field) {
+  if (field) field.classList.remove('has-error');
+}
+
+function addTrip() {
+  var data = getFormData();
+  var hasError = false;
+
+  document.querySelectorAll('.form-field.has-error').forEach(function(f) {
+    f.classList.remove('has-error');
+  });
+
+  if (!data.name) {
+    setFieldError(document.getElementById('name').closest('.form-field'));
+    hasError = true;
+  }
+  if (!data.destination) {
+    setFieldError(document.getElementById('destination').closest('.form-field'));
+    hasError = true;
+  }
+  if (!data.period) {
+    setFieldError(document.getElementById('dateStart').closest('.form-field'));
+    hasError = true;
+  }
+  if (hasError) return;
+
+  var r = calcTrip(data);
+  if (editingIdx >= 0) {
+    trips[editingIdx] = { data: data, result: r };
+    editingIdx = -1;
+    document.getElementById('addTripBtn').textContent = '출장 추가';
+  } else {
+    trips.push({ data: data, result: r });
+  }
+  renderAll();
+  resetForm();
+}
+
+function editTrip(idx) {
+  var d = trips[idx].data;
+  document.getElementById('name').value = d.name || '';
+  document.getElementById('jobTitle').value = d.jobTitle || '';
+  document.getElementById('destination').value = d.destination || '';
+  document.getElementById('dateStart').value = d.dateStart || '';
+  document.getElementById('dateEnd').value = d.dateEnd || '';
+  document.getElementById('purpose').value = d.purpose || '';
+  document.getElementById('grade').value = d.grade;
+  document.getElementById('tripType').value = d.tripType;
+  onTripTypeChange();
+  document.getElementById('region').value = d.region;
+  document.getElementById('vehicle').value = d.vehicle;
+  document.getElementById('vehicleDays').value = d.vehicleDays !== undefined ? d.vehicleDays : getCalcDays();
+  onVehicleChange();
+  document.getElementById('lodgingPersonalNights').value = d.lodgingPersonalNights || 0;
+  document.getElementById('lodgingCorpNights').value = d.lodgingCorpNights || 0;
+  document.getElementById('freeMeals').value = d.freeMeals;
+  document.getElementById('lodgingActual').value = d.lodgingPerNight;
+  document.getElementById('transportFarePersonal').value    = d.transportFarePersonal    || 0;
+  document.getElementById('transportFareCorp').value        = d.transportFareCorp        || 0;
+  document.getElementById('transportFuelPersonal').value    = d.transportFuelPersonal    || 0;
+  document.getElementById('transportFuelCorp').value        = d.transportFuelCorp        || 0;
+  document.getElementById('transportParkingPersonal').value = d.transportParkingPersonal || 0;
+  document.getElementById('transportParkingCorp').value     = d.transportParkingCorp     || 0;
+  document.getElementById('transportHipassPersonal').value  = d.transportHipassPersonal  || 0;
+  document.getElementById('transportHipassCorp').value      = d.transportHipassCorp      || 0;
+  document.getElementById('attachment').value = d.attachment || '';
+  onDateChange();
+  updatePreview();
+  editingIdx = idx;
+  document.getElementById('addTripBtn').textContent = '수정 완료';
+  document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function removeTrip(idx) {
+  trips.splice(idx, 1);
+  renderAll();
+}
+
+function moveTrip(idx, dir) {
+  var target = idx + dir;
+  if (target < 0 || target >= trips.length) return;
+  var tmp = trips[idx];
+  trips[idx] = trips[target];
+  trips[target] = tmp;
+  renderAll();
+}
+
+function clearAll() {
+  if (confirm('모든 출장 내역을 삭제하시겠습니까?')) {
+    trips = [];
+    renderAll();
+  }
+}
+
+function resetForm() {
+  document.getElementById('destination').value = '';
+  document.getElementById('dateStart').value = '';
+  document.getElementById('dateEnd').value = '';
+  document.getElementById('dateInfo').textContent = '';
+  document.getElementById('purpose').value = '';
+  document.getElementById('lodgingPersonalNights').value = '0';
+  document.getElementById('lodgingCorpNights').value = '0';
+  document.getElementById('vehicle').value = 'public';
+  document.getElementById('vehicleDays').value = '1';
+  onVehicleChange();
+  document.getElementById('freeMeals').value = '0';
+  document.getElementById('transportFarePersonal').value    = '0';
+  document.getElementById('transportFareCorp').value        = '0';
+  document.getElementById('transportFuelPersonal').value    = '0';
+  document.getElementById('transportFuelCorp').value        = '0';
+  document.getElementById('transportParkingPersonal').value = '0';
+  document.getElementById('transportParkingCorp').value     = '0';
+  document.getElementById('transportHipassPersonal').value  = '0';
+  document.getElementById('transportHipassCorp').value      = '0';
+  var totalEl = document.getElementById('transportTotalDisplay');
+  if (totalEl) totalEl.textContent = '0원';
+  document.getElementById('lodgingActual').value = '0';
+  document.getElementById('attachment').value = '';
+  document.getElementById('tripType').value = '외';
+  document.querySelectorAll('.comma-hint').forEach(function(h) { h.textContent = ''; });
+  document.querySelectorAll('.form-field.has-error').forEach(function(f) { f.classList.remove('has-error'); });
+  onTripTypeChange();
+  updatePreview();
+}
+
+function renderAll() {
+  var hasTrips = trips.length > 0;
+  document.getElementById('listCard').style.display = hasTrips ? 'block' : 'none';
+  document.getElementById('outputCard').style.display = hasTrips ? 'block' : 'none';
+  var uniqueNames = trips.reduce(function(acc, t) { var n = t.data.name || ''; if (n && acc.indexOf(n) === -1) acc.push(n); return acc; }, []);
+  document.getElementById('tripCount').textContent = uniqueNames.length || trips.length;
+
+  var listHtml = '';
+  trips.forEach(function(t, i) {
+    var tagClass = t.result.isInner ? 'tag inner' : 'tag';
+    var tagText = t.result.isInner ? '근무지 내' : '근무지 외';
+    listHtml += '<div class="trip-item">';
+    listHtml += '<div class="move-btns no-print">';
+    listHtml += '<button class="btn-move" onclick="moveTrip(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + ' title="위로">▲</button>';
+    listHtml += '<button class="btn-move" onclick="moveTrip(' + i + ',1)" ' + (i === trips.length - 1 ? 'disabled' : '') + ' title="아래로">▼</button>';
+    listHtml += '</div>';
+    var nameDisplay = t.data.name + (t.data.jobTitle ? ' ' + t.data.jobTitle : '');
+    listHtml += '<div class="info"><strong>' + nameDisplay + '</strong> <span class="' + tagClass + '">' + tagText + '</span> | ' + t.data.destination + ' | ' + t.data.period + '</div>';
+    listHtml += '<span class="amount">' + fmt(t.result.total) + '</span>';
+    listHtml += '<button class="btn btn-ghost no-print" onclick="editTrip(' + i + ')">수정</button>';
+    listHtml += '<button class="btn btn-danger no-print" onclick="removeTrip(' + i + ')">삭제</button>';
+    listHtml += '</div>';
+  });
+  document.getElementById('tripList').innerHTML = listHtml;
+
+  var sumPersonalDeposit = 0;
+  var sumCorpDeposit = 0;
+  var tbody = '';
+  var regulations = {};
+
+  trips.forEach(function(t, i) {
+    var d = t.data;
+    var r = t.result;
+
+    var dep = calcPreviewDeposit(r, d);
+    var personalDeposit = dep.personal;
+    var corpDeposit = dep.corp;
+    sumPersonalDeposit += personalDeposit;
+    sumCorpDeposit += corpDeposit;
+
+    var ilbiStr = '-';
+    if (r.ilbi > 0) {
+      if (r.pubDays > 0 && r.vDays > 0) {
+        // 혼합: 대중교통 일수 + 차량 일수
+        ilbiStr = nb(fmt(r.ilbiPerDay)) + '/일×' + r.pubDays + '일';
+        ilbiStr += '<br>+' + nb(fmt(r.ilbiVehiclePerDay)) + '/일×' + r.vDays + '일';
+        ilbiStr += '<br>=' + nb(fmt(r.ilbi));
+      } else {
+        ilbiStr = nb(fmt(r.vDays > 0 ? r.ilbiVehiclePerDay : r.ilbiPerDay)) + '/일×' + d.days + '일';
+        if (d.days > 1) ilbiStr += '<br>=' + nb(fmt(r.ilbi));
+      }
+      ilbiStr += '<br><span class="badge-personal">(개인)</span>';
+    }
+
+    var mealStr = '-';
+    if (!r.isInner) {
+      if (d.freeMeals > 0 && r.meal > 0) {
+        mealStr = '25,000원/일x' + d.days + '일';
+        mealStr += '<br>-' + nb(fmt(r.mealDeduct));
+        mealStr += '<br>(' + d.freeMeals + '식 공제)';
+        mealStr += '<br>=' + nb(fmt(r.meal));
+        mealStr += '<br><span class="badge-personal">(개인)</span>';
+      } else if (d.freeMeals > 0 && r.meal === 0) {
+        mealStr = '-';
+      } else if (r.meal > 0) {
+        mealStr = '25,000원/일x' + d.days + '일';
+        mealStr += '<br>=' + nb(fmt(r.meal));
+        mealStr += '<br><span class="badge-personal">(개인)</span>';
+      }
+    }
+
+    var lodgingStr = '-';
+    if (r.lodging > 0) {
+      var ls = calcLodgingSplit(d);
+      if (ls.personal > 0 && ls.corp > 0) {
+        lodgingStr = '개인: ' + nb(fmt(ls.personal)) + ' <span class="badge-personal">(개인)</span><br>';
+        lodgingStr += '법인: ' + nb(fmt(ls.corp)) + ' <span class="badge-corp">(법인)</span><br>';
+        lodgingStr += '<b>계: ' + nb(fmt(r.lodging)) + '</b>';
+      } else {
+        lodgingStr = nb(fmt(r.lodging)) + '<br>' + (ls.personal > 0
+          ? '<span class="badge-personal">(개인)</span>'
+          : '<span class="badge-corp">(법인)</span>');
+      }
+    }
+
+    var tItemsRender = [
+      { label: '운임',     p: d.transportFarePersonal    || 0, c: d.transportFareCorp    || 0 },
+      { label: '주유',     p: d.transportFuelPersonal    || 0, c: d.transportFuelCorp    || 0 },
+      { label: '주차',     p: d.transportParkingPersonal || 0, c: d.transportParkingCorp || 0 },
+      { label: '하이패스', p: d.transportHipassPersonal  || 0, c: d.transportHipassCorp  || 0 }
+    ].filter(function(x) { return (x.p + x.c) > 0; });
+
+    var transportStr = '-';
+    if (tItemsRender.length > 0) {
+      var tLineStrs = tItemsRender.map(function(x) {
+        var total = x.p + x.c;
+        if (x.p > 0 && x.c > 0) {
+          return x.label + ':<br><span class="badge-personal">(개인)</span> ' + nb(fmt(x.p)) +
+                 '<br><span class="badge-corp">(법인)</span> ' + nb(fmt(x.c));
+        } else {
+          var badge = x.p > 0 ? '<span class="badge-personal">(개인)</span>' : '<span class="badge-corp">(법인)</span>';
+          return x.label + ':<br>' + nb(fmt(total)) + ' ' + badge;
+        }
+      });
+      if (tItemsRender.length === 1) {
+        transportStr = tLineStrs[0];
+      } else {
+        transportStr = tLineStrs.join('<br>') + '<br><b>합계: ' + nb(fmt(r.transport)) + '</b>';
+      }
+    }
+
+    var nameStr = d.name;
+    if (d.jobTitle) nameStr += '<br>' + d.jobTitle;
+    if (d.attachment) nameStr += '<br><span style="font-size:7px;color:var(--g-text-disabled);display:inline-block;margin-top:3px;">' + d.attachment + '</span>';
+
+    tbody += '<tr>';
+    tbody += '<td>' + nameStr + '</td>';
+    tbody += '<td>' + d.destination + '</td>';
+    tbody += '<td>' + d.period + '</td>';
+    tbody += '<td class="left">' + d.purpose + '</td>';
+    tbody += '<td class="right">' + ilbiStr + '</td>';
+    tbody += '<td class="right">' + mealStr + '</td>';
+    tbody += '<td class="right">' + lodgingStr + '</td>';
+    tbody += '<td class="right">' + transportStr + '</td>';
+    tbody += '<td class="right" style="font-weight:600;">' + (personalDeposit > 0 ? nb(fmtN(personalDeposit)) : '-') + '</td>';
+    tbody += '<td class="right" style="font-weight:600;">' + (corpDeposit > 0 ? nb(fmtN(corpDeposit)) : '-') + '</td>';
+    tbody += '<td class="right" style="font-weight:700;">' + nb(fmtN(r.total)) + '</td>';
+    tbody += '</tr>';
+
+    collectRegulations(d, r, regulations);
+  });
+
+  var allIlbi = 0, allMeal = 0, allLodging = 0, allTransport = 0;
+  trips.forEach(function(t) {
+    allIlbi += t.result.ilbi;
+    allMeal += t.result.meal;
+    allLodging += t.result.lodging;
+    allTransport += t.result.transport;
+  });
+
+  tbody += '<tr class="total-row">';
+  tbody += '<td colspan="4" style="font-weight:700;">총 금액(원)</td>';
+  tbody += '<td class="right">' + nb(fmtN(allIlbi)) + '</td>';
+  tbody += '<td class="right">' + nb(fmtN(allMeal)) + '</td>';
+  tbody += '<td class="right">' + nb(fmtN(allLodging)) + '</td>';
+  tbody += '<td class="right">' + nb(fmtN(allTransport)) + '</td>';
+  tbody += '<td class="right highlight">' + (sumPersonalDeposit > 0 ? nb(fmtN(sumPersonalDeposit)) : '-') + '</td>';
+  tbody += '<td class="right highlight">' + (sumCorpDeposit > 0 ? nb(fmtN(sumCorpDeposit)) : '-') + '</td>';
+  tbody += '<td class="right highlight">' + nb(fmtN(sumPersonalDeposit + sumCorpDeposit)) + '</td>';
+  tbody += '</tr>';
+
+  document.getElementById('tableBody').innerHTML = tbody;
+  renderRegulations(regulations);
+}
+
+function addReg(regs, rule, name) {
+  if (!regs[rule]) regs[rule] = [];
+  if (regs[rule].indexOf(name) === -1) regs[rule].push(name);
+}
+
+function collectRegulations(d, r, regs) {
+  var lodgingCap = { '서울': 100000, '광역시': 80000, '기타': 70000 };
+  var isInner = r.isInner;
+  var n = d.name;
+
+  addReg(regs, d.gradeText + ' 기준 적용', n);
+  addReg(regs, d.tripTypeText + ' 출장 기준 적용', n);
+
+  if (isInner) {
+    addReg(regs, '근무지 내 출장: 식비·숙박비 미지급 (일비만 지급)', n);
+    if (d.tripType === '내4') addReg(regs, '근무지 내 4시간 이상: 일비 20,000원/일', n);
+    else addReg(regs, '근무지 내 4시간 미만: 일비 10,000원/일', n);
+  } else {
+    addReg(regs, '근무지 외 출장: 일비 25,000원/일, 식비 25,000원/일', n);
+
+    if (d.nights > 0 && d.grade === '2') {
+      var cap = lodgingCap[d.region];
+      addReg(regs, d.regionText + ' 숙박비 상한 ' + fmt(cap) + ' 적용 (제2호 기준)', n);
+    }
+    if (d.nights > 0 && d.grade === '1') {
+      addReg(regs, d.regionText + ' 숙박비 실비 정산 (제1호 기준)', n);
+    }
+
+    if (d.freeMeals > 0) {
+      addReg(regs, '무료 식사 ' + d.freeMeals + '식 공제: 1식당 ' + fmt(Math.floor(25000/3)) + ' 감액', n);
+      if (!regs['식비 공제 후 10원 미만 절삭 처리']) regs['식비 공제 후 10원 미만 절삭 처리'] = [];
+    }
+  }
+
+  if (d.vehicle === 'company') {
+    var vd = r.vDays, pd = r.pubDays;
+    var label = '업무용차량/자가용 이용 ' + vd + '일: 일비 50% 감액';
+    if (pd > 0) label += ' (나머지 ' + pd + '일 대중교통 기준)';
+    addReg(regs, label, n);
+  } else if (d.vehicle === 'exclusive') {
+    var vd2 = r.vDays, pd2 = r.pubDays;
+    var label2 = '전용차량 이용 ' + vd2 + '일: 일비 미지급';
+    if (pd2 > 0) label2 += ' (나머지 ' + pd2 + '일 대중교통 기준)';
+    addReg(regs, label2, n);
+  }
+
+}
+
+function renderRegulations(regs) {
+  var el = document.getElementById('regulationNote');
+  var calcEl = document.getElementById('calcNote');
+
+  var TRUNCATION_KEY = '식비 공제 후 10원 미만 절삭 처리';
+  var hasTruncation = TRUNCATION_KEY in regs;
+  var filteredRegs = {};
+  Object.keys(regs).forEach(function(k) { if (k !== TRUNCATION_KEY) filteredRegs[k] = regs[k]; });
+
+  var keys = Object.keys(filteredRegs).sort(function(a, b) { return a.length - b.length; });
+  if (keys.length === 0) { el.style.display = 'none'; } else {
+    el.style.display = 'block';
+    var html = '<strong>적용 내규 (여비규정 [시행 2025.12.18.] 기준)</strong><ul>';
+    keys.forEach(function(rule) {
+      var names = filteredRegs[rule];
+      html += '<li>' + rule;
+      if (names.length > 0) html += ' <span style="color:var(--g-text-disabled);">— ' + names.join(', ') + '</span>';
+      html += '</li>';
+    });
+    html += '</ul>';
+    el.innerHTML = html;
+  }
+
+  if (hasTruncation) {
+    calcEl.style.display = 'block';
+    calcEl.textContent = '※ 식비 공제 후 10원 미만 절삭 처리';
+  } else {
+    calcEl.style.display = 'none';
+  }
+}
+
+function loadSampleData() {
+  trips = [];
+
+  trips.push({
+    data: { name:'홍길동', jobTitle:'사원', destination:'강남역 회의실(스파크플러스)', period:"'26.2.15.(토)",
+            purpose:'TEMM 청년대표단 1차 워크숍', grade:'2', gradeText:'제2호 (일반 직원)',
+            tripType:'내4', tripTypeText:'근무지 내 (4시간 이상)', region:'서울', regionText:'서울특별시',
+            days:1, nights:0, lodgingPersonalNights:0, lodgingCorpNights:0, vehicle:'public', vehicleText:'대중교통',
+            freeMeals:0, transportFarePersonal:0, transportFareCorp:0, transportFuelPersonal:0, transportFuelCorp:0,
+            transportParkingPersonal:0, transportParkingCorp:0, transportHipassPersonal:0, transportHipassCorp:0,
+            transport:0, lodgingPerNight:0, attachment:'붙임1' },
+    result: calcTrip({ tripType:'내4', grade:'2', region:'서울', days:1, nights:0, vehicle:'public', freeMeals:0, transport:0, lodgingPerNight:0 })
+  });
+
+  trips.push({
+    data: { name:'홍길동', jobTitle:'사원', destination:'인천광역시', period:"'26.3.4.~3.7.(4일)",
+            purpose:'한중일 교사교류 프로그램(TTEP) 참석', grade:'2', gradeText:'제2호 (일반 직원)',
+            tripType:'외', tripTypeText:'근무지 외', region:'광역시', regionText:'인천광역시',
+            days:4, nights:0, lodgingPersonalNights:0, lodgingCorpNights:0, vehicle:'public', vehicleText:'대중교통',
+            freeMeals:2, transportFarePersonal:0, transportFareCorp:0, transportFuelPersonal:0, transportFuelCorp:0,
+            transportParkingPersonal:0, transportParkingCorp:0, transportHipassPersonal:0, transportHipassCorp:0,
+            transport:0, lodgingPerNight:0, attachment:'붙임2' },
+    result: calcTrip({ tripType:'외', grade:'2', region:'광역시', days:4, nights:0, vehicle:'public', freeMeals:2, transport:0, lodgingPerNight:0 })
+  });
+
+  trips.push({
+    data: { name:'홍길동', jobTitle:'사원', destination:'대전시 유성구', period:"'26.4.13.(토)",
+            purpose:'TEMM 청년대표단 4차 워크숍 (운임 왕복 혼합결제 예시)', grade:'2', gradeText:'제2호 (일반 직원)',
+            tripType:'외', tripTypeText:'근무지 외', region:'기타', regionText:'대전광역시',
+            days:1, nights:0, lodgingPersonalNights:0, lodgingCorpNights:0, vehicle:'public', vehicleText:'대중교통',
+            freeMeals:0, transportFarePersonal:11700, transportFareCorp:11700, transportFuelPersonal:0, transportFuelCorp:0,
+            transportParkingPersonal:0, transportParkingCorp:0, transportHipassPersonal:0, transportHipassCorp:0,
+            transport:23400, lodgingPerNight:0, attachment:'붙임6-1, 붙임6-2' },
+    result: calcTrip({ tripType:'외', grade:'2', region:'기타', days:1, nights:0, vehicle:'public', freeMeals:0, transport:23400, lodgingPerNight:0 })
+  });
+
+  trips.push({
+    data: { name:'홍길동', jobTitle:'사원', destination:'경기도 수원시', period:"'26.5.20.~5.21.(2일)",
+            purpose:'환경교육 현장점검', grade:'2', gradeText:'제2호 (일반 직원)',
+            tripType:'외', tripTypeText:'근무지 외', region:'기타', regionText:'경기도',
+            days:2, nights:1, lodgingPersonalNights:0, lodgingCorpNights:1, vehicle:'public', vehicleText:'대중교통',
+            freeMeals:0, transportFarePersonal:0, transportFareCorp:15000, transportFuelPersonal:0, transportFuelCorp:0,
+            transportParkingPersonal:0, transportParkingCorp:0, transportHipassPersonal:0, transportHipassCorp:0,
+            transport:15000, lodgingPerNight:65000, attachment:'붙임7' },
+    result: calcTrip({ tripType:'외', grade:'2', region:'기타', days:2, nights:1, vehicle:'public', freeMeals:0, transport:15000, lodgingPerNight:65000 })
+  });
+
+  renderAll();
+}
+
+function exportToExcel() {
+  if (trips.length === 0) { alert('출장 내역이 없습니다.'); return; }
+
+  var fmtX = function(n) { return n > 0 ? n.toLocaleString('ko-KR') + '원' : '-'; };
+  var nl = function(s) { return s.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ''); };
+
+  var rows = [['출장자', '붙임', '출장지', '출장 기간', '출장 용무', '일비', '식비',
+    '숙박비(개인)', '숙박비(법인)', '숙박비합계',
+    '운임(개인)', '운임(법인)', '주유(개인)', '주유(법인)', '주차(개인)', '주차(법인)', '하이패스(개인)', '하이패스(법인)', '교통비합계',
+    '개인예금', '법인예금', '여비총액']];
+
+  var sumIlbi=0, sumMeal=0, sumLodging=0, sumTransport=0, sumPersonal=0, sumCorp=0;
+
+  trips.forEach(function(t) {
+    var d = t.data; var r = t.result;
+    var dep = calcPreviewDeposit(r, d);
+    var ls = calcLodgingSplit(d);
+    sumIlbi+=r.ilbi; sumMeal+=r.meal; sumLodging+=r.lodging;
+    sumTransport+=r.transport; sumPersonal+=dep.personal; sumCorp+=dep.corp;
+    rows.push([
+      d.name, d.attachment || '', d.destination, d.period, d.purpose,
+      r.ilbi > 0 ? r.ilbi : 0, r.meal > 0 ? r.meal : 0,
+      ls.personal || 0, ls.corp || 0, r.lodging > 0 ? r.lodging : 0,
+      d.transportFarePersonal    || 0, d.transportFareCorp    || 0,
+      d.transportFuelPersonal    || 0, d.transportFuelCorp    || 0,
+      d.transportParkingPersonal || 0, d.transportParkingCorp || 0,
+      d.transportHipassPersonal  || 0, d.transportHipassCorp  || 0,
+      r.transport, dep.personal, dep.corp, r.total
+    ]);
+  });
+  rows.push(['합계', '', '', '', '', sumIlbi, sumMeal, '', '', sumLodging, '', '', '', '', '', '', '', '', sumTransport, sumPersonal, sumCorp, sumIlbi+sumMeal+sumLodging+sumTransport]);
+
+  var numCols = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+  var style = '<style>body{font-family:"맑은 고딕",sans-serif;font-size:10pt;}' +
+    'table{border-collapse:collapse;width:100%;}' +
+    'th,td{border:1px solid #000;padding:4px 6px;vertical-align:middle;}' +
+    'th{background:#d9d9d9;font-weight:bold;text-align:center;}' +
+    '.num{text-align:right;} .ctr{text-align:center;}' +
+    '.personal{color:#0055cc;} .total-row{font-weight:bold;background:#f2f2f2;}</style>';
+
+  var thead = '<tr>';
+  rows[0].forEach(function(h) { thead += '<th>' + h + '</th>'; });
+  thead += '</tr>';
+
+  var tbody2 = '';
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    var isTotal = (i === rows.length - 1);
+    tbody2 += '<tr' + (isTotal ? ' class="total-row"' : '') + '>';
+    row.forEach(function(cell, ci) {
+      var isNum = numCols.indexOf(ci) > -1;
+      var cls = isNum ? ' class="num"' : ' class="ctr"';
+      var val = (isNum && typeof cell === 'number') ? (cell > 0 ? cell.toLocaleString('ko-KR') : '-') : (cell || '-');
+      tbody2 += '<td' + cls + '>' + val + '</td>';
+    });
+    tbody2 += '</tr>';
+  }
+
+  var today = new Date();
+  var dateStr = today.getFullYear() + ('0'+(today.getMonth()+1)).slice(-2) + ('0'+today.getDate()).slice(-2);
+
+  var html = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+    'xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="utf-8">' +
+    '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
+    '<x:Name>출장여비</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>' +
+    '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
+    style + '</head><body>' +
+    '<table><thead>' + thead + '</thead><tbody>' + tbody2 + '</tbody></table>' +
+    '</body></html>';
+
+  var blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '출장여비_' + dateStr + '.xls';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+onTripTypeChange();
+updatePreview();
+</script>
+</body>
+</html>
